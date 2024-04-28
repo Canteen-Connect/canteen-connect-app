@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:foodies/Resources/AuthMethod.dart';
+import 'package:foodies/screens/HomePage.dart';
 import 'package:foodies/screens/SignUp.dart';
 
 class LoginPage extends StatefulWidget {
@@ -10,6 +12,28 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool hidePassword = true;
+  bool _isLoading = false;
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  void login() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods()
+        .loginUser(_emailController.text, _passwordController.text);
+    setState(() {
+      _isLoading = false;
+    });
+    if (res != 'success') {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(res)));
+    } else {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomePage()));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +61,8 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
-                decoration: InputDecoration(
+                controller: _emailController,
+                decoration: const InputDecoration(
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   border: OutlineInputBorder(),
                   labelText: 'Email',
@@ -48,10 +73,11 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
+                controller: _passwordController,
                 obscureText: hidePassword,
                 decoration: InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: 'Password',
                     suffixIcon: IconButton(
                       onPressed: () {
@@ -72,20 +98,24 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
                 height: 70,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: login,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 255, 199, 59),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: const Text(
-                    'Sign In',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18),
-                  ),
+                  child: _isLoading
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : const Text(
+                          'Sign In',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                        ),
                 ),
               ),
             ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:foodies/Models/user.dart';
+import 'package:foodies/Resources/AuthMethod.dart';
 import 'package:foodies/screens/LoginPage.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -11,6 +13,38 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   bool hidePassword = true;
   bool hideRePassword = true;
+  bool _isLoading = false;
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _rePasswordController = TextEditingController();
+
+  void signupUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().signUp(
+        _nameController.text,
+        _emailController.text,
+        _phoneController.text,
+        _passwordController.text,
+        _rePasswordController.text,
+        _addressController.text);
+    setState(() {
+      _isLoading = false;
+    });
+    if (res != 'success') {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(res)));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('User registered successfully!')));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginPage()));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +65,8 @@ class _SignUpPageState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
-                  decoration: InputDecoration(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Name',
                       floatingLabelBehavior: FloatingLabelBehavior.always),
@@ -41,7 +76,8 @@ class _SignUpPageState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
-                  decoration: InputDecoration(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Email',
                       floatingLabelBehavior: FloatingLabelBehavior.always),
@@ -51,7 +87,8 @@ class _SignUpPageState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
-                  decoration: InputDecoration(
+                  controller: _phoneController,
+                  decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Phone No.',
                       floatingLabelBehavior: FloatingLabelBehavior.always),
@@ -61,6 +98,18 @@ class _SignUpPageState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
+                  controller: _addressController,
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Address',
+                      floatingLabelBehavior: FloatingLabelBehavior.always),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextField(
+                  controller: _passwordController,
                   obscureText: hidePassword,
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
@@ -79,13 +128,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
+                    controller: _rePasswordController,
                     obscureText: hideRePassword,
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                         labelText: 'Re-enter Password',
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         suffixIcon: IconButton(
@@ -137,20 +187,24 @@ class _SignUpPageState extends State<SignUpPage> {
                   width: double.infinity,
                   height: 70,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: signupUser,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 255, 199, 59),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    child: const Text(
-                      'Sign Up',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                    ),
+                    child: _isLoading
+                        ? const CircularProgressIndicator(
+                            color: Color.fromARGB(255, 255, 255, 255),
+                          )
+                        : const Text(
+                            'Sign Up',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18),
+                          ),
                   ),
                 ),
               ),
