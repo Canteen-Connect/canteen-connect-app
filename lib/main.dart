@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:foodies/MONGODB/mongo.dart';
-import 'package:foodies/constant.dart';
 import 'package:foodies/screens/SplashScreen.dart';
-import 'package:realm/realm.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MongoDatabase.connect();
   runApp(const MyApp());
 }
 

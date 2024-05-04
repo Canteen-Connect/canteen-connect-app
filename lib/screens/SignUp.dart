@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:foodies/Models/user.dart';
 import 'package:foodies/Resources/AuthMethod.dart';
 import 'package:foodies/screens/LoginPage.dart';
 
@@ -83,7 +82,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       floatingLabelBehavior: FloatingLabelBehavior.always),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(

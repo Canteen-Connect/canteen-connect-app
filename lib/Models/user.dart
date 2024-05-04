@@ -1,12 +1,9 @@
-import 'package:email_validator/email_validator.dart';
-
 class Users {
   final String name;
   final String email;
   final String contact;
   final String password;
   final String address;
-  final String userId;
   final bool isAdmin;
   final bool isOpen;
 
@@ -16,21 +13,32 @@ class Users {
     required this.contact,
     required this.password,
     required this.address,
-    required this.userId,
     this.isAdmin = false,
     this.isOpen = true,
   });
-
-  bool isEmailFromKIETDomain() {
-    return email.endsWith("@kiet.edu");
+  // Convert a Users object into a map
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'email': email,
+      'contact': contact,
+      'password': password,
+      'address': address,
+      'isAdmin': isAdmin,
+      'isOpen': isOpen,
+    };
   }
 
-  bool isValid() {
-    return name.length >= 2 &&
-        EmailValidator.validate(email) &&
-        isEmailFromKIETDomain() &&
-        contact.length == 10 &&
-        password.length >= 8 &&
-        address.length >= 5;
+  // Convert a map into a Users object
+  static Users fromJson(Map<String, dynamic> json) {
+    return Users(
+      name: json['name'],
+      email: json['email'],
+      contact: json['contact'],
+      password: json['password'],
+      address: json['address'],
+      isAdmin: json['isAdmin'],
+      isOpen: json['isOpen'],
+    );
   }
 }
