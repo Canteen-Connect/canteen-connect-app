@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:foodies/screens/HomePage.dart';
+import 'package:foodies/screens/LoginPage.dart';
 import 'package:foodies/screens/SplashScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,8 +21,28 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: FutureBuilder(
+        future: _getLandingPage(),
+        builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return SplashScreen();
+          } else {
+            return snapshot.data ?? Container();
+          }
+        },
+      ),
     );
+  }
+
+  Future<Widget> _getLandingPage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token');
+    print(token);
+    if (token != null) {
+      return HomePage();
+    } else {
+      return LoginPage();
+    }
   }
 }
 

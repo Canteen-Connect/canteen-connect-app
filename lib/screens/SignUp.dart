@@ -55,10 +55,13 @@ class _SignUpPageState extends State<SignUpPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              const Text(
-                'Enter Your Details Here',
-                textAlign: TextAlign.start,
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'Enter Your Details Here',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                ),
               ),
               const SizedBox(height: 30),
               Padding(

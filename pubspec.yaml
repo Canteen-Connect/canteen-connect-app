@@ -39,6 +39,7 @@ dependencies:
   realm: ^1.6.1
   email_validator: ^2.1.17
   http: ^1.1.0
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:
