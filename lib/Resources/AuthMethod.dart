@@ -60,15 +60,16 @@ class AuthMethods {
           )
           .timeout(const Duration(seconds: 20));
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        final data = jsonDecode(response.body);
+        Map<String, dynamic> data = jsonDecode(response.body);
+        print(data);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', data['token']);
         res = 'success';
         print(data['token']);
+        print('THIS IS RESPONSE: $data');
       } else {
         final data = jsonDecode(response.body);
         res = (data['message'].toString());
-        print(response.body);
       }
     } on TimeoutException catch (e) {
       print(e);

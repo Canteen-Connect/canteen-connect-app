@@ -1,4 +1,4 @@
-# foodies
+# CANTEEN CONNECT
 
 A new Flutter project.
 

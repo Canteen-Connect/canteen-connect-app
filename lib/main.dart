@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
   }
 
   Future<Widget> _getLandingPage() async {
+    await Future.delayed(const Duration(seconds: 2));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
     print(token);
