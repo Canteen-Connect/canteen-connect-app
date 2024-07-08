@@ -38,11 +38,10 @@ class MyApp extends StatelessWidget {
     await Future.delayed(const Duration(seconds: 2));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
-    print(token);
     if (token != null) {
-      return HomePage();
+      return const HomePage();
     } else {
-      return LoginPage();
+      return const LoginPage();
     }
   }
 }
