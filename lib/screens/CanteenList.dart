@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodies/screens/canteen_item.dart';
 
 class CanteenList extends StatefulWidget {
   const CanteenList({super.key});
@@ -21,7 +22,7 @@ class _CanteenListState extends State<CanteenList> {
             style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
           ),
         ),
-        const SizedBox(height: 10), // Add some space (10 pixels
+        const SizedBox(height: 10),
         Container(
           padding: const EdgeInsets.all(8),
           child: TextField(
@@ -43,38 +44,32 @@ class _CanteenListState extends State<CanteenList> {
                 title: 'Green Chilli',
                 subtitle: 'Cafeteria | All types of food available',
                 operatingHours: '9:30 am to 8:00 pm',
-                imageUrl:
-                    'assets/canteen-pic.jpg', // Replace with your image path
+                imageUrl: 'assets/canteen-pic.jpg',
               ),
               FoodCard(
                 title: 'Amul Cafe',
                 subtitle: 'Cafeteria | All types of food available',
                 operatingHours: '9:30 am to 8:00 pm',
-                imageUrl:
-                    'assets/canteen-pic.jpg', // Replace with your image path
+                imageUrl: 'assets/canteen-pic.jpg',
               ),
               FoodCard(
                 title: 'Big Treat Canteen',
                 subtitle: 'Cafeteria | All types of food available',
                 operatingHours: '9:30 am to 8:00 pm',
-                imageUrl:
-                    'assets/canteen-pic.jpg', // Replace with your image path
+                imageUrl: 'assets/canteen-pic.jpg',
               ),
               FoodCard(
                 title: 'ABC',
                 subtitle: 'Cafeteria | All types of food available',
                 operatingHours: '9:30 am to 8:00 pm',
-                imageUrl:
-                    'assets/canteen-pic.jpg', // Replace with your image path
+                imageUrl: 'assets/canteen-pic.jpg',
               ),
               FoodCard(
                 title: 'Green Chilli',
                 subtitle: 'Cafeteria | All types of food available',
                 operatingHours: '9:30 am to 8:00 pm',
-                imageUrl:
-                    'assets/canteen-pic.jpg', // Replace with your image path
+                imageUrl: 'assets/canteen-pic.jpg',
               ),
-              // Add more FoodCard widgets here
             ],
           ),
         )
@@ -101,7 +96,10 @@ class FoodCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('$title pressed');
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => CanteenItems(
+                  title: title,
+                )));
       },
       child: Card(
         child: Row(
@@ -110,13 +108,12 @@ class FoodCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(6.0),
               child: ClipRRect(
-                borderRadius:
-                    BorderRadius.circular(15.0), // Set the radius as needed
+                borderRadius: BorderRadius.circular(15.0),
                 child: Image.asset(
                   imageUrl,
                   fit: BoxFit.fill,
                   width: 150,
-                  height: 100, // You can adjust this as needed
+                  height: 100,
                 ),
               ),
             ),
@@ -131,8 +128,13 @@ class FoodCard extends StatelessWidget {
                       style: const TextStyle(fontSize: 20),
                     ),
                     Text(
-                      '$subtitle |\n $operatingHours',
+                      subtitle,
                       style: const TextStyle(fontSize: 15),
+                    ),
+                    Text(
+                      operatingHours,
+                      style: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
