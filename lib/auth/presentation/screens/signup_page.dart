@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:foodies/Resources/AuthMethod.dart';
-import 'package:foodies/screens/LoginPage.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:foodies/auth/presentation/bloc/auth/auth_bloc.dart';
+import 'package:foodies/auth/presentation/bloc/password/password_bloc.dart';
+import 'package:foodies/auth/presentation/screens/login_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -10,10 +12,6 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  bool hidePassword = true;
-  bool hideRePassword = true;
-  bool _isLoading = false;
-
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -22,27 +20,13 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _rePasswordController = TextEditingController();
 
   void signupUser() async {
-    setState(() {
-      _isLoading = true;
-    });
-    String res = await AuthMethods().signUp(
-        _nameController.text,
-        _emailController.text,
-        _phoneController.text,
-        _passwordController.text,
-        _rePasswordController.text,
-        _addressController.text);
-    setState(() {
-      _isLoading = false;
-    });
-    if (res != 'success') {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(res)));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('User registered successfully!')));
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const LoginPage()));
-    }
+    context.read<AuthBloc>().add(SignUpWithEmailAndPassword(
+          name: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          phone: _phoneController.text.trim(),
+          address: _addressController.text.trim(),
+          password: _passwordController.text.trim(),
+        ));
   }
 
   @override
@@ -108,48 +92,56 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: TextField(
-                  controller: _passwordController,
-                  obscureText: hidePassword,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: 'Password',
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          hidePassword = !hidePassword;
-                        });
-                      },
-                      icon: Icon(hidePassword
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: TextField(
-                    controller: _rePasswordController,
-                    obscureText: hideRePassword,
-                    decoration: InputDecoration(
+              BlocBuilder<PasswordBloc, PasswordState>(
+                builder: (context, state) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextField(
+                      controller: _passwordController,
+                      obscureText: state.hideSignupPassword,
+                      decoration: InputDecoration(
                         border: const OutlineInputBorder(),
-                        labelText: 'Re-enter Password',
+                        labelText: 'Password',
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         suffixIcon: IconButton(
                           onPressed: () {
-                            setState(() {
-                              hideRePassword = !hideRePassword;
-                            });
+                            context
+                                .read<PasswordBloc>()
+                                .add(ToggleSignupPasswordVisibility());
                           },
-                          icon: Icon(hideRePassword
+                          icon: Icon(state.hideSignupPassword
                               ? Icons.visibility_outlined
                               : Icons.visibility_off_outlined),
-                        ))),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              BlocBuilder<PasswordBloc, PasswordState>(
+                builder: (context, state) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextField(
+                        controller: _rePasswordController,
+                        obscureText: state.hideConfirmPassword,
+                        decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            labelText: 'Re-enter Password',
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                context
+                                    .read<PasswordBloc>()
+                                    .add(ToggleConfirmPasswordVisibility());
+                              },
+                              icon: Icon(state.hideConfirmPassword
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined),
+                            ))),
+                  );
+                },
               ),
               const SizedBox(height: 20),
               Row(
@@ -183,32 +175,48 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 70,
-                  child: ElevatedButton(
-                    onPressed: signupUser,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 255, 199, 59),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+              BlocConsumer<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthError) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(state.error),
+                      backgroundColor: Colors.red,
+                    ));
+                  } else if (state is AuthSignUpSuccess) {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const LoginPage()));
+                  }
+                },
+                builder: (context, state) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 70,
+                      child: ElevatedButton(
+                        onPressed: signupUser,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 255, 199, 59),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        child: (state is AuthLoading)
+                            ? const CircularProgressIndicator(
+                                color: Color.fromARGB(255, 255, 255, 255),
+                              )
+                            : const Text(
+                                'Sign Up',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
+                              ),
                       ),
                     ),
-                    child: _isLoading
-                        ? const CircularProgressIndicator(
-                            color: Color.fromARGB(255, 255, 255, 255),
-                          )
-                        : const Text(
-                            'Sign Up',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18),
-                          ),
-                  ),
-                ),
+                  );
+                },
               ),
               const SizedBox(height: 20),
               Row(
@@ -217,8 +225,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   const Text('Already have an account?'),
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) => LoginPage()));
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const LoginPage()));
                     },
                     style: TextButton.styleFrom(
                       foregroundColor: const Color.fromARGB(255, 255, 199, 59),
