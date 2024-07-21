@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:foodies/screens/canteen_item.dart';
+import 'package:foodies/canteen%20items/presentation/screens/canteen_item.dart';
 
 class CanteenList extends StatefulWidget {
   const CanteenList({super.key});
