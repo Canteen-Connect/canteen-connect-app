@@ -3,6 +3,7 @@
 *.log
 *.pyc
 *.swp
+*.env
 .DS_Store
 .atom/
 .buildlog/
@@ -45,3 +46,5 @@ app.*.map.json
 
 # Project setup related
 /lib/constant.dart
+lib/core/constants/constant.dart
+windows/flutter/CMakeLists.txt

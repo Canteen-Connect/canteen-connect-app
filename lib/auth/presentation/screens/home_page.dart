@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:foodies/Resources/AuthMethod.dart';
-import 'package:foodies/screens/CanteenList.dart';
-import 'package:foodies/screens/LoginPage.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:foodies/auth/presentation/bloc/auth/auth_bloc.dart';
+import 'package:foodies/canteen%20list/presentation/screens/canteen_list.dart';
+import 'package:foodies/auth/presentation/screens/login_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,16 +17,7 @@ class _HomePageState extends State<HomePage> {
   PageController pageController = PageController();
 
   void logout() async {
-    String res = await AuthMethods().logoutUser();
-    if (res != 'success') {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(res)));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('User logged out successfully!')));
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const LoginPage()));
-    }
-    print('Logout button pressed');
+    context.read<AuthBloc>().add(LogOut());
   }
 
   void navigationTapped(int value) {
@@ -105,25 +97,38 @@ class _HomePageState extends State<HomePage> {
             ),
             Align(
               alignment: FractionalOffset.bottomCenter,
-              child: ListTile(
-                title: Container(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 40),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        alignment: Alignment.centerLeft,
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.orange),
-                      ),
-                      onPressed: logout,
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Icon(Icons.logout),
-                          SizedBox(width: 8),
-                          Text('Logout'),
-                        ],
+              child: BlocListener<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthError) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(state.error),
+                      backgroundColor: Colors.red,
+                    ));
+                  } else if (state is AuthSignOutSuccess) {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const LoginPage()));
+                  }
+                },
+                child: ListTile(
+                  title: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 40),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          alignment: Alignment.centerLeft,
+                          backgroundColor:
+                              WidgetStateProperty.all<Color>(Colors.orange),
+                        ),
+                        onPressed: logout,
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Icon(Icons.logout),
+                            SizedBox(width: 8),
+                            Text('Logout'),
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:foodies/screens/HomePage.dart';
-import 'package:foodies/screens/LoginPage.dart';
-import 'package:foodies/screens/SplashScreen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:foodies/auth/presentation/bloc/auth/auth_bloc.dart';
+import 'package:foodies/auth/presentation/bloc/password/password_bloc.dart';
+import 'package:foodies/auth/presentation/screens/home_page.dart';
+import 'package:foodies/auth/presentation/screens/login_page.dart';
+import 'package:foodies/core/SplashScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -15,21 +18,30 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow),
-        useMaterial3: true,
-      ),
-      home: FutureBuilder(
-        future: _getLandingPage(),
-        builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return SplashScreen();
-          } else {
-            return snapshot.data ?? Container();
-          }
-        },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthBloc>(
+          create: (BuildContext context) => AuthBloc(),
+        ),
+        BlocProvider<PasswordBloc>(
+            create: (BuildContext context) => PasswordBloc()),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow),
+          useMaterial3: true,
+        ),
+        home: FutureBuilder(
+          future: _getLandingPage(),
+          builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return SplashScreen();
+            } else {
+              return snapshot.data ?? Container();
+            }
+          },
+        ),
       ),
     );
   }
@@ -38,11 +50,10 @@ class MyApp extends StatelessWidget {
     await Future.delayed(const Duration(seconds: 2));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
-    print(token);
     if (token != null) {
-      return HomePage();
+      return const HomePage();
     } else {
-      return LoginPage();
+      return const LoginPage();
     }
   }
 }
