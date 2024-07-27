@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:foodies/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'package:foodies/auth/presentation/bloc/password/password_bloc.dart';
-import 'package:foodies/auth/presentation/screens/home_page.dart';
-import 'package:foodies/auth/presentation/screens/login_page.dart';
-import 'package:foodies/core/SplashScreen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:foodies/auth/presentation/screens/SplashScreen.dart';
+import 'package:foodies/homepage/presentation/bloc/page_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,50 +23,17 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<PasswordBloc>(
             create: (BuildContext context) => PasswordBloc()),
+        BlocProvider<PageBloc>(
+          create: (BuildContext context) => PageBloc(),
+        ),
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow),
-          useMaterial3: true,
-        ),
-        home: FutureBuilder(
-          future: _getLandingPage(),
-          builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return SplashScreen();
-            } else {
-              return snapshot.data ?? Container();
-            }
-          },
-        ),
-      ),
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow),
+            useMaterial3: true,
+          ),
+          home: const SplashScreen()),
     );
-  }
-
-  Future<Widget> _getLandingPage() async {
-    await Future.delayed(const Duration(seconds: 2));
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('token');
-    if (token != null) {
-      return const HomePage();
-    } else {
-      return const LoginPage();
-    }
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return SplashScreen();
   }
 }

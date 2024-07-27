@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:foodies/core/api/user_api.dart';
 import 'package:http/http.dart' as http;
 
-import '../../presentation/model/user.dart';
-
 class AuthProvider {
   Future<http.Response> signInWithEmailAndPassword(
       String email, String password) async {
@@ -29,20 +27,20 @@ class AuthProvider {
       String contact, String password, String address) async {
     http.Response response;
     try {
-      Users user = Users(
-        name: name,
-        email: email,
-        contact: contact,
-        password: password,
-        address: address,
-      );
+      Map<String, dynamic> user = {
+        'name': name,
+        'email': email,
+        'contact': contact,
+        'password': password,
+        'address': address,
+      };
       response = await http
           .post(
             Uri.parse(UserApi.signUpApi),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
             },
-            body: jsonEncode(user.toJson()),
+            body: jsonEncode(user),
           )
           .timeout(const Duration(seconds: 20));
     } catch (e) {

@@ -9,8 +9,8 @@ final class AuthLoading extends AuthState {}
 
 final class AuthSignInSuccess extends AuthState {
   final String token;
-
-  AuthSignInSuccess({required this.token});
+  final Users user;
+  AuthSignInSuccess({required this.user, required this.token});
 }
 
 final class AuthError extends AuthState {

@@ -1,4 +1,5 @@
 class Users {
+  final String id;
   final String name;
   final String email;
   final String contact;
@@ -8,6 +9,7 @@ class Users {
   final bool isOpen;
 
   const Users({
+    required this.id,
     required this.name,
     required this.email,
     required this.contact,
@@ -16,9 +18,11 @@ class Users {
     this.isAdmin = false,
     this.isOpen = true,
   });
+
   // Convert a Users object into a map
   Map<String, dynamic> toJson() {
     return {
+      '_id': id,
       'name': name,
       'email': email,
       'contact': contact,
@@ -32,6 +36,7 @@ class Users {
   // Convert a map into a Users object
   static Users fromJson(Map<String, dynamic> json) {
     return Users(
+      id: json['_id'],
       name: json['name'],
       email: json['email'],
       contact: json['contact'],
