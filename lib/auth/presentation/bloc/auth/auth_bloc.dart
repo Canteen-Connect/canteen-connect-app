@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:foodies/auth/data/repository/auth_repo.dart';
+import 'package:foodies/auth/presentation/model/user.dart';
 import 'package:foodies/core/api/user_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,7 +22,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             final token = response[UserApi.token];
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setString('token', token);
-            emit(AuthSignInSuccess(token: response[UserApi.token]));
+            Users user = Users.fromJson(response[UserApi.user]['_doc']);
+            await prefs.setString('user', jsonEncode(user.toJson()));
+            emit(AuthSignInSuccess(token: response[UserApi.token], user: user));
           } else {
             emit(AuthError(error: response[UserApi.message]));
           }
@@ -57,9 +62,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         try {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.remove('token');
+          await prefs.remove('user');
           emit(AuthSignOutSuccess());
         } catch (e) {
           emit(AuthError(error: 'Failed to log out : $e'));
+        }
+      },
+    );
+
+    on<TokenValidation>(
+      (event, emit) async {
+        emit(AuthLoading());
+        try {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          String? token = prefs.getString('token');
+          Users user;
+          if (token != null) {
+            user = Users.fromJson(jsonDecode(prefs.getString('user')!));
+            emit(AuthSignInSuccess(token: token, user: user));
+          } else {
+            emit(AuthError(error: 'Token not found'));
+          }
+        } catch (e) {
+          emit(AuthError(error: e.toString()));
         }
       },
     );

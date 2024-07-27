@@ -31,6 +31,8 @@ class SignUpWithEmailAndPassword extends AuthEvent {
 
 class LogOut extends AuthEvent {}
 
+class TokenValidation extends AuthEvent {}
+
 class AuthEventError extends AuthEvent {
   final String error;
 

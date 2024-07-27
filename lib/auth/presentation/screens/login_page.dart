@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:foodies/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'package:foodies/auth/presentation/bloc/password/password_bloc.dart';
 import 'package:foodies/auth/presentation/screens/signup_page.dart';
-import 'package:foodies/auth/presentation/screens/home_page.dart';
+import 'package:foodies/homepage/presentation/screens/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

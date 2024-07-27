@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:foodies/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'package:foodies/canteen%20list/presentation/screens/canteen_list.dart';
 import 'package:foodies/auth/presentation/screens/login_page.dart';
+import 'package:foodies/homepage/presentation/bloc/page_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -142,47 +143,47 @@ class _HomePageState extends State<HomePage> {
         controller: pageController,
         physics: const NeverScrollableScrollPhysics(),
         onPageChanged: (value) {
-          setState(() {
-            _page = value;
-          });
+          context.read<PageBloc>().add(PageChanged(page: value));
         },
         children: const [
           CanteenList(),
           Text('Orders'),
-          Text('Cart'),
           Text('Feedback'),
-          Text('Notifications'),
+          Text('Profile'),
         ],
       ),
-      bottomNavigationBar: CupertinoTabBar(
-        height: 70,
-        iconSize: 30,
-        backgroundColor: Colors.white,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.location_pin),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_active),
-            label: '',
-          ),
-        ],
-        activeColor: Colors.orange,
-        currentIndex: _page,
-        onTap: (value) => navigationTapped(value),
+      bottomNavigationBar: BlocBuilder<PageBloc, PageState>(
+        builder: (context, state) {
+          if (state is PageLoaded) {
+            _page = state.page;
+          }
+          return CupertinoTabBar(
+            height: 70,
+            iconSize: 30,
+            backgroundColor: Colors.white,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.location_pin),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.feedback_rounded),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: '',
+              ),
+            ],
+            activeColor: Colors.orange,
+            currentIndex: _page,
+            onTap: (value) => navigationTapped(value),
+          );
+        },
       ),
     );
   }
