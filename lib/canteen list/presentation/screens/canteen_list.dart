@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:foodies/canteen%20items/presentation/screens/canteen_item.dart';
+import 'package:foodies/canteen%20list/presentation/bloc/canteen_bloc.dart';
 
-class CanteenList extends StatefulWidget {
+class CanteenList extends StatelessWidget {
   const CanteenList({super.key});
 
   @override
-  State<CanteenList> createState() => _CanteenListState();
-}
-
-class _CanteenListState extends State<CanteenList> {
-  @override
   Widget build(BuildContext context) {
+    context.read<CanteenBloc>().add(FetchCanteenList());
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -37,40 +35,34 @@ class _CanteenListState extends State<CanteenList> {
         ),
         const SizedBox(height: 10),
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.all(8),
-            children: const <Widget>[
-              FoodCard(
-                title: 'Green Chilli',
-                subtitle: 'Cafeteria | All types of food available',
-                operatingHours: '9:30 am to 8:00 pm',
-                imageUrl: 'assets/canteen-pic.jpg',
-              ),
-              FoodCard(
-                title: 'Amul Cafe',
-                subtitle: 'Cafeteria | All types of food available',
-                operatingHours: '9:30 am to 8:00 pm',
-                imageUrl: 'assets/canteen-pic.jpg',
-              ),
-              FoodCard(
-                title: 'Big Treat Canteen',
-                subtitle: 'Cafeteria | All types of food available',
-                operatingHours: '9:30 am to 8:00 pm',
-                imageUrl: 'assets/canteen-pic.jpg',
-              ),
-              FoodCard(
-                title: 'ABC',
-                subtitle: 'Cafeteria | All types of food available',
-                operatingHours: '9:30 am to 8:00 pm',
-                imageUrl: 'assets/canteen-pic.jpg',
-              ),
-              FoodCard(
-                title: 'Green Chilli',
-                subtitle: 'Cafeteria | All types of food available',
-                operatingHours: '9:30 am to 8:00 pm',
-                imageUrl: 'assets/canteen-pic.jpg',
-              ),
-            ],
+          child: BlocBuilder<CanteenBloc, CanteenState>(
+            builder: (context, state) {
+              if (state is CanteenLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (state is CanteenLoaded) {
+                return ListView.builder(
+                  itemCount: state.canteenList.length,
+                  itemBuilder: (context, index) {
+                    return FoodCard(
+                      title: state.canteenList[index].name,
+                      subtitle: state.canteenList[index].description,
+                      operatingHours: '9:00 AM - 9:00 PM',
+                      imageUrl: 'assets/canteen-pic.jpg',
+                    );
+                  },
+                );
+              } else if (state is CanteenError) {
+                return Center(
+                  child: Text(state.message),
+                );
+              } else {
+                return const Center(
+                  child: Text('No data found'),
+                );
+              }
+            },
           ),
         )
       ],
@@ -133,8 +125,7 @@ class FoodCard extends StatelessWidget {
                     ),
                     Text(
                       operatingHours,
-                      style: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),

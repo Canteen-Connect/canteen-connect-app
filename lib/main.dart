@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:foodies/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'package:foodies/auth/presentation/bloc/password/password_bloc.dart';
 import 'package:foodies/auth/presentation/screens/SplashScreen.dart';
+import 'package:foodies/canteen%20list/presentation/bloc/canteen_bloc.dart';
 import 'package:foodies/homepage/presentation/bloc/page_bloc.dart';
 
 void main() async {
@@ -21,10 +22,12 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthBloc>(
           create: (BuildContext context) => AuthBloc(),
         ),
-        BlocProvider<PasswordBloc>(
-            create: (BuildContext context) => PasswordBloc()),
+        BlocProvider<PasswordBloc>(create: (BuildContext context) => PasswordBloc()),
         BlocProvider<PageBloc>(
           create: (BuildContext context) => PageBloc(),
+        ),
+        BlocProvider<CanteenBloc>(
+          create: (BuildContext context) => CanteenBloc(),
         ),
       ],
       child: MaterialApp(

@@ -1,4 +1,4 @@
-import 'package:foodies/core/constants/constant.dart';
+import 'package:foodies/core/secrets/constants/constant.dart';
 
 class UserApi {
   static const String signInApi = '$URL/users/login';
