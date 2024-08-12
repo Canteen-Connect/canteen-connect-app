@@ -45,7 +45,6 @@ app.*.map.json
 /android/app/release
 
 # Project setup related
-/lib/constant.dart
-lib/core/constants/constant.dart
+lib/core/secrets/constants/constant.dart
 windows/flutter/CMakeLists.txt
 pubspec.lock
