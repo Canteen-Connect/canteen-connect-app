@@ -46,6 +46,7 @@ class CanteenList extends StatelessWidget {
                   itemCount: state.canteenList.length,
                   itemBuilder: (context, index) {
                     return FoodCard(
+                      id: state.canteenList[index].id,
                       title: state.canteenList[index].name,
                       subtitle: state.canteenList[index].description,
                       operatingHours: '9:00 AM - 9:00 PM',
@@ -75,6 +76,7 @@ class FoodCard extends StatelessWidget {
   final String subtitle;
   final String operatingHours;
   final String imageUrl;
+  final String id;
 
   const FoodCard({
     super.key,
@@ -82,6 +84,7 @@ class FoodCard extends StatelessWidget {
     required this.subtitle,
     required this.operatingHours,
     required this.imageUrl,
+    required this.id,
   });
 
   @override
@@ -91,6 +94,7 @@ class FoodCard extends StatelessWidget {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => CanteenItems(
                   title: title,
+                  id: id,
                 )));
       },
       child: Card(
@@ -106,6 +110,18 @@ class FoodCard extends StatelessWidget {
                   fit: BoxFit.fill,
                   width: 150,
                   height: 100,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey[200],
+                      child: const Center(
+                        child: Icon(
+                          Icons.image_not_supported,
+                          color: Colors.grey,
+                          size: 40,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
