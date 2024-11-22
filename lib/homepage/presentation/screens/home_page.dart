@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:foodies/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'package:foodies/canteen%20list/presentation/screens/canteen_list.dart';
 import 'package:foodies/auth/presentation/screens/login_page.dart';
+import 'package:foodies/cart/presentation/screens/cart_page.dart';
 import 'package:foodies/homepage/presentation/bloc/page_bloc.dart';
 
 class HomePage extends StatefulWidget {
@@ -39,6 +40,14 @@ class _HomePageState extends State<HomePage> {
             );
           },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shopping_bag),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CartPage()));
+            },
+          ),
+        ],
       ),
       drawer: Drawer(
         backgroundColor: Colors.white,
@@ -106,8 +115,7 @@ class _HomePageState extends State<HomePage> {
                       backgroundColor: Colors.red,
                     ));
                   } else if (state is AuthSignOutSuccess) {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const LoginPage()));
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginPage()));
                   }
                 },
                 child: ListTile(
@@ -118,8 +126,7 @@ class _HomePageState extends State<HomePage> {
                       child: ElevatedButton(
                         style: ButtonStyle(
                           alignment: Alignment.centerLeft,
-                          backgroundColor:
-                              WidgetStateProperty.all<Color>(Colors.orange),
+                          backgroundColor: WidgetStateProperty.all<Color>(Colors.orange),
                         ),
                         onPressed: logout,
                         child: const Row(
