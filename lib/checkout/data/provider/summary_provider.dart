@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:either_dart/either.dart';
 import 'package:foodies/auth/presentation/model/user.dart';
 import 'package:foodies/core/secrets/constants/constant.dart';
-import 'package:foodies/order/data/repository/summary_repo.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 

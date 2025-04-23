@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:foodies/auth/data/repository/auth_repo.dart';
 import 'package:foodies/auth/presentation/model/user.dart';
 import 'package:foodies/core/api/user_api.dart';
-import 'package:foodies/order/data/repository/web_socket_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'auth_event.dart';

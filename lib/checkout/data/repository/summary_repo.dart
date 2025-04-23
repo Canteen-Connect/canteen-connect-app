@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:foodies/auth/presentation/model/user.dart';
 import 'package:foodies/canteen%20items/presentation/model/Item.dart';
-import 'package:foodies/order/data/provider/summary_provider.dart';
+import 'package:foodies/checkout/data/provider/summary_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SummaryRepo {

@@ -1,9 +1,8 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:foodies/order/data/repository/web_socket_services.dart';
-import 'package:foodies/order/presentation/blocs/bloc/summary_bloc.dart';
+import 'package:foodies/checkout/data/repository/web_socket_services.dart';
+import 'package:foodies/checkout/presentation/blocs/bloc/summary_bloc.dart';
 
 class OrderProcessingPage extends StatefulWidget {
   final String userId;
@@ -36,7 +35,6 @@ class _OrderProcessingPageState extends State<OrderProcessingPage> {
     super.dispose();
   }
 
-  // Simulate vendor confirmation within the maximum wait time
   void _startOrderConfirmationTimer() async {
     socketService.connect(widget.userId);
     socketService.onInitiatePayment = (data) {
