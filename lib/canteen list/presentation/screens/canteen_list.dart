@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:foodies/canteen%20items/presentation/screens/canteen_item.dart';
 import 'package:foodies/canteen%20list/presentation/bloc/canteen_bloc.dart';
+import 'package:foodies/cart/presentation/screens/cart_page.dart';
 
 class CanteenList extends StatelessWidget {
   const CanteenList({super.key});
@@ -9,64 +10,84 @@ class CanteenList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<CanteenBloc>().add(FetchCanteenList());
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Container(
-          padding: const EdgeInsets.only(left: 8, right: 50),
-          child: const Text(
-            'From where would you like to order?',
-            textAlign: TextAlign.start,
-            style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Canteens',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 10),
-        Container(
-          padding: const EdgeInsets.all(8),
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Search...',
-              prefixIcon: const Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25),
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shopping_bag),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CartPage()));
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.only(left: 8, right: 50),
+            child: const Text(
+              'From where would you like to order?',
+              textAlign: TextAlign.start,
+              style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.all(8),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Search...',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 10),
-        Expanded(
-          child: BlocBuilder<CanteenBloc, CanteenState>(
-            builder: (context, state) {
-              if (state is CanteenLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (state is CanteenLoaded) {
-                return ListView.builder(
-                  itemCount: state.canteenList.length,
-                  itemBuilder: (context, index) {
-                    return FoodCard(
-                      id: state.canteenList[index].id,
-                      title: state.canteenList[index].name,
-                      subtitle: state.canteenList[index].description,
-                      operatingHours: '9:00 AM - 9:00 PM',
-                      imageUrl: 'assets/canteen-pic.jpg',
-                    );
-                  },
-                );
-              } else if (state is CanteenError) {
-                return Center(
-                  child: Text(state.message),
-                );
-              } else {
-                return const Center(
-                  child: Text('No data found'),
-                );
-              }
-            },
-          ),
-        )
-      ],
+          const SizedBox(height: 10),
+          Expanded(
+            child: BlocBuilder<CanteenBloc, CanteenState>(
+              builder: (context, state) {
+                if (state is CanteenLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (state is CanteenLoaded) {
+                  return ListView.builder(
+                    itemCount: state.canteenList.length,
+                    itemBuilder: (context, index) {
+                      return FoodCard(
+                        id: state.canteenList[index].id,
+                        title: state.canteenList[index].name,
+                        subtitle: state.canteenList[index].description,
+                        operatingHours: '9:00 AM - 9:00 PM',
+                        imageUrl: 'assets/canteen-pic.jpg',
+                      );
+                    },
+                  );
+                } else if (state is CanteenError) {
+                  return Center(
+                    child: Text(state.message),
+                  );
+                } else {
+                  return const Center(
+                    child: Text('No data found'),
+                  );
+                }
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }

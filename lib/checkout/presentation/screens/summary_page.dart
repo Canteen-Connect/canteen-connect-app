@@ -1,8 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:foodies/order/data/repository/summary_repo.dart';
-import 'package:foodies/order/presentation/blocs/bloc/summary_bloc.dart';
-import 'package:foodies/order/presentation/screens/orderProcessing_page.dart';
+import 'package:foodies/auth/presentation/model/user.dart';
+import 'package:foodies/checkout/data/repository/summary_repo.dart';
+import 'package:foodies/checkout/presentation/blocs/bloc/summary_bloc.dart';
+import 'package:foodies/checkout/presentation/screens/orderProcessing_page.dart';
+import 'package:foodies/razorpay/presentation/bloc/payment_bloc.dart';
+import 'package:foodies/razorpay/presentation/screens/payment_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SummaryPage extends StatelessWidget {
   @override
@@ -55,7 +60,7 @@ class SummaryPage extends StatelessWidget {
                       children: [
                         _StatusStep(title: 'Processed', isActive: state.isOrderProcessing),
                         _StatusStep(title: 'Accepted', isActive: state.isOrderAccepted),
-                        _StatusStep(title: 'Payment', isActive: false),
+                        const _StatusStep(title: 'Payment', isActive: false),
                       ],
                     );
                   }
@@ -87,9 +92,9 @@ class _StatusStep extends StatelessWidget {
         CircleAvatar(
           radius: 16,
           backgroundColor: isActive ? Colors.green : Colors.grey,
-          child: Icon(Icons.check, color: Colors.white, size: 16),
+          child: const Icon(Icons.check, color: Colors.white, size: 16),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(
           title,
           style: TextStyle(
@@ -128,9 +133,9 @@ class _SummaryCard extends StatelessWidget {
                       .toList(),
                   const Divider(),
                   _SummaryRow(label: 'Subtotal', amount: 'IDR ${state.totalPrice.toString()}'),
-                  const _SummaryRow(label: 'Service fee', amount: 'IDR 2.000'),
+                  // const _SummaryRow(label: 'Service fee', amount: 'IDR 2.000'),
                   const Divider(),
-                  _SummaryRow(label: 'Total', amount: 'IDR ${(state.totalPrice + 2)}', isBold: true),
+                  _SummaryRow(label: 'Total', amount: 'IDR ${(state.totalPrice)}', isBold: true),
                 ],
               );
             }
@@ -194,10 +199,25 @@ class _BottomButtons extends StatelessWidget {
                 onPressed: () async {
                   //CREATE ORDER
                   //PAYMENT PAGE NAVIGATOR IF ORDER PROCESSED ELSE SHOW THIS
+                  Map<String, String> cartInfo = await SummaryRepo().getCartInfo();
                   if (state.isOrderAccepted) {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    Users user = Users.fromJson(jsonDecode(prefs.getString('user')!));
+                    final String userEmail = user.email;
+                    final String userContact = user.contact;
+                    context.read<PaymentBloc>().add(InitiatePayment(
+                          amount: double.parse(cartInfo['total']!),
+                          userEmail: userEmail,
+                          userContact: userContact,
+                        ));
                     //PAYMENT PAGE NAVIGATOR
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PaymentPage(),
+                      ),
+                    );
                   } else {
-                    Map<String, String> cartInfo = await SummaryRepo().getCartInfo();
                     await SummaryRepo().createOrder(
                       cartInfo['vendorId']!,
                       double.parse(cartInfo['total']!),

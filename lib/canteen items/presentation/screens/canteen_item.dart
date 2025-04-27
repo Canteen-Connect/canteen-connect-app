@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:foodies/auth/presentation/model/user.dart';
 import 'package:foodies/canteen%20items/presentation/blocs/add_cart_bloc/add_cart_bloc.dart';
 import 'package:foodies/canteen%20items/presentation/blocs/items_bloc/item_bloc.dart';
-import 'package:foodies/cart/data/repository/cart_repo.dart';
 import 'package:foodies/cart/presentation/screens/cart_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

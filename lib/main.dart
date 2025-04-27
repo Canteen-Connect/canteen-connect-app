@@ -7,8 +7,8 @@ import 'package:foodies/canteen%20items/presentation/blocs/add_cart_bloc/add_car
 import 'package:foodies/canteen%20items/presentation/blocs/items_bloc/item_bloc.dart';
 import 'package:foodies/canteen%20list/presentation/bloc/canteen_bloc.dart';
 import 'package:foodies/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
-import 'package:foodies/homepage/presentation/bloc/page_bloc.dart';
-import 'package:foodies/order/presentation/blocs/bloc/summary_bloc.dart';
+import 'package:foodies/checkout/presentation/blocs/bloc/summary_bloc.dart';
+import 'package:foodies/razorpay/presentation/bloc/payment_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,9 +28,6 @@ class MyApp extends StatelessWidget {
         BlocProvider<PasswordBloc>(
           create: (BuildContext context) => PasswordBloc(),
         ),
-        BlocProvider<PageBloc>(
-          create: (BuildContext context) => PageBloc(),
-        ),
         BlocProvider<CanteenBloc>(
           create: (BuildContext context) => CanteenBloc(),
         ),
@@ -46,10 +43,13 @@ class MyApp extends StatelessWidget {
         BlocProvider<SummaryBloc>(
           create: (BuildContext context) => SummaryBloc(),
         ),
+        BlocProvider<PaymentBloc>(
+          create: (BuildContext context) => PaymentBloc(),
+        ),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
+          title: 'Canteen Connect',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow),
             useMaterial3: true,

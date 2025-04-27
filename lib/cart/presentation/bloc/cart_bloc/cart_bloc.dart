@@ -33,9 +33,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         await CartRepo().deleteProduct(event.productId);
         emit(CartLoading());
         final Map<String, dynamic> cart = await CartRepo().getCart();
+        print(cart['cartItems']);
         emit(CartLoaded(cart['cartItems'], cart['totalPrice']));
       } catch (e) {
-        emit(CartError(e.toString()));
+        emit(CartError('Something went wrong'));
       }
     });
   }

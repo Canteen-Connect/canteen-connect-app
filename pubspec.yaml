@@ -36,6 +36,7 @@ dependencies:
   flutter_bloc: ^8.1.6
   http: ^1.1.0
   mongo_dart: ^0.10.0
+  razorpay_flutter: ^1.4.0
   shared_preferences: ^2.2.3
   socket_io_client: ^3.0.2
 

@@ -57,6 +57,7 @@ class CartProvider {
       Users user = Users.fromJson(jsonDecode(prefs.getString('user')!));
       final String userId = user.id;
       final String token = prefs.getString('token')!;
+      print('token: $token' + 'userId: $userId' + 'productId: $productId');
       final response = await http
           .delete(Uri.parse('$URL/cart/remove-product'),
               headers: <String, String>{
@@ -64,12 +65,12 @@ class CartProvider {
                 'Authorization': 'Bearer $token',
               },
               body: jsonEncode(<String, String>{
-                'id': userId,
-                'productId': productId,
+                "id": userId,
+                "productId": productId,
               }))
-          .timeout(
-            const Duration(seconds: 10),
-          );
+          .timeout(const Duration(seconds: 10));
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
       return Right(response);
     } catch (e) {
       throw Left(e);

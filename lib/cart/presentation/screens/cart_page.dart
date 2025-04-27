@@ -1,9 +1,7 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:foodies/cart/presentation/bloc/cart_bloc/cart_bloc.dart';
-import 'package:foodies/order/presentation/screens/summary_page.dart';
+import 'package:foodies/checkout/presentation/screens/summary_page.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -47,7 +45,7 @@ class _CartPageState extends State<CartPage> {
                     },
                   );
                 } else if (state is CartError) {
-                  return Center(child: Text(state.message));
+                  return Center(child: Text('${state.message} Error'));
                 } else {
                   return const SizedBox();
                 }
